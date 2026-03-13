@@ -4,9 +4,9 @@ import { Document } from 'mongoose';
 @Schema()
 class Blog extends Document {
   @Prop()
-  title: string;
+  title?: string;
   @Prop()
-  content: string;
+  content?: string;
 }
 
 const BlogSchema = SchemaFactory.createForClass(Blog);
