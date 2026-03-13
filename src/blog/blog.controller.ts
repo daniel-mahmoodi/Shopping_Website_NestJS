@@ -7,7 +7,6 @@ import {
   Patch,
   Post,
   Put,
-  Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { BlogDto } from './dtos/blog.dto';
@@ -18,8 +17,8 @@ import { BlogService } from './blog.service';
 export class BlogController {
   constructor(private blogService: BlogService) {}
   @Get()
-  findAll(@Query() queryParams) {
-    return this.blogService.findAll(queryParams);
+  findAll() {
+    return this.blogService.findAll();
   }
 
   @Post()
