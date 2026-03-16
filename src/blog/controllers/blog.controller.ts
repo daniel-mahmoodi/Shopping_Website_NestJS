@@ -10,9 +10,9 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { BlogDto } from './dtos/blog.dto';
-import { BlogService } from './blog.service';
-import { BlogQueryDto } from './dtos/blog-query.dto';
+import { BlogDto } from '../dtos/blog.dto';
+import { BlogService } from '../services/blog.service';
+import { BlogQueryDto } from '../dtos/blog-query.dto';
 
 @ApiTags('blog')
 @Controller('blog')
@@ -21,6 +21,11 @@ export class BlogController {
   @Get()
   findAll(@Query() queryparams: BlogQueryDto) {
     return this.blogService.findAll(queryparams);
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.blogService.findOne(id);
   }
 
   @Post()

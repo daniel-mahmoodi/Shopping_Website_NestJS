@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { BlogDto } from './dtos/blog.dto';
+import { BlogDto } from '../dtos/blog.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Blog } from './schemas/blog.schema';
+import { Blog } from '../schemas/blog.schema';
 import { Model } from 'mongoose';
-import { BlogQueryDto } from './dtos/blog-query.dto';
+import { BlogQueryDto } from '../dtos/blog-query.dto';
 import { sortFunction } from 'src/shared/utils/sort-utils';
-import { title } from 'process';
 
 @Injectable()
 export class BlogService {
@@ -24,6 +23,7 @@ export class BlogService {
       .find(query)
       .skip((page - 1) * limit)
       .sort(sortObject)
+      .populate('category', { title: 1 })
       .select(selectObject)
       .limit(limit)
       .exec();
@@ -34,6 +34,7 @@ export class BlogService {
   async findOne(id: string, selectObject: any = { __v: 0 }) {
     const blog = await this.blogModel
       .findOne({ _id: id })
+      .populate('category', { title: 1 })
       .select(selectObject)
       .exec();
     if (blog) {
@@ -49,11 +50,14 @@ export class BlogService {
   }
 
   async update(id: string, body: BlogDto) {
-    const blog = await this.findOne(id, { title: 1, content: 1 });
-    blog.title = body.title;
-    blog.content = body.content;
-    await blog.save();
-    return blog;
+    // const blog = await this.findOne(id, { title: 1, content: 1 });
+    // blog.title = body.title;
+    // blog.content = body.content;
+    // await blog.save();
+    // return blog;
+    return await this.blogModel.findByIdAndUpdate(id, body, {
+      new: true,
+    });
   }
 
   async delete(id: string) {
