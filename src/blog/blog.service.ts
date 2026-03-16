@@ -5,6 +5,7 @@ import { Blog } from './schemas/blog.schema';
 import { Model } from 'mongoose';
 import { BlogQueryDto } from './dtos/blog-query.dto';
 import { sortFunction } from 'src/shared/utils/sort-utils';
+import { title } from 'process';
 
 @Injectable()
 export class BlogService {
@@ -12,7 +13,7 @@ export class BlogService {
     @InjectModel(Blog.name) private readonly blogModel: Model<Blog>,
   ) {}
 
-  async findAll(queryParams: BlogQueryDto) {
+  async findAll(queryParams: BlogQueryDto, selectObject: any = { __v: 0 }) {
     const { limit = 5, page = 1, title, sort } = queryParams;
     const query: any = {};
     if (title) {
@@ -23,14 +24,18 @@ export class BlogService {
       .find(query)
       .skip((page - 1) * limit)
       .sort(sortObject)
+      .select(selectObject)
       .limit(limit)
       .exec();
     const count = await this.blogModel.countDocuments(query).exec();
     return { blogs, count };
   }
 
-  async findOne(id: string) {
-    const blog = await this.blogModel.findOne({ _id: id }).exec();
+  async findOne(id: string, selectObject: any = { __v: 0 }) {
+    const blog = await this.blogModel
+      .findOne({ _id: id })
+      .select(selectObject)
+      .exec();
     if (blog) {
       return blog;
     } else {
@@ -44,7 +49,7 @@ export class BlogService {
   }
 
   async update(id: string, body: BlogDto) {
-    const blog = await this.findOne(id);
+    const blog = await this.findOne(id, { title: 1, content: 1 });
     blog.title = body.title;
     blog.content = body.content;
     await blog.save();
@@ -52,7 +57,7 @@ export class BlogService {
   }
 
   async delete(id: string) {
-    const blog = await this.findOne(id);
+    const blog = await this.findOne(id, { _id: 1 });
     await blog.deleteOne();
   }
 }
