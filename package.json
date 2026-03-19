@@ -24,6 +24,7 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/mongoose": "^11.0.4",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/serve-static": "^5.0.4",
     "@nestjs/swagger": "^11.2.6",
     "@types/mongoose": "^5.11.96",
     "class-transform": "^0.7.1",
